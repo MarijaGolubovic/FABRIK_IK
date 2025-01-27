@@ -1,0 +1,4 @@
+<library path="fabrik_ik_plugin">
+    <class name="fabrik_ik/FabrikIkPlugin" type="fabrik_ik::FabrikIKPlugin" base_class_type="kinematics::KinematicsBase">
+    </class>
+</library>
