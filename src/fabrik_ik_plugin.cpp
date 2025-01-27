@@ -19,6 +19,12 @@ namespace {
 auto const LOGGER = rclcpp::get_logger("fabrik_ik");
 }
 
+
+#define TRACE() do{ RCLCPP_INFO_STREAM(LOGGER, __PRETTY_FUNCTION__ << ":" << __LINE__); }while(0)
+#define DEBUG(var) do{ RCLCPP_INFO_STREAM(LOGGER, #var << " = " << var); }while(0)
+
+
+
 bool FabrikIKPlugin::initialize(rclcpp::Node::SharedPtr const& node,
                               moveit::core::RobotModel const& robot_model,
                               std::string const& group_name,
@@ -81,6 +87,7 @@ bool FabrikIKPlugin::searchPositionIK(std::vector<geometry_msgs::msg::Pose> cons
                                     kinematics::KinematicsQueryOptions const& options,
                                     moveit::core::RobotState const* context_state) const {
     (void)context_state;  // not used
+TRACE();
 
     // Read current ROS parameters
     auto params = parameter_listener_->get_params();
@@ -157,6 +164,8 @@ bool FabrikIKPlugin::searchPositionIK(std::vector<geometry_msgs::msg::Pose> cons
             "Initial guess exceeds joint limits. Regenerating a random valid configuration.");
         robot_.set_random_valid_configuration(init_state);
     }
+
+TRACE();
 
     // Optimize until a valid solution is found or we have timed out.
     while (!done_optimizing) {
@@ -289,6 +298,7 @@ bool FabrikIKPlugin::searchPositionIK(std::vector<geometry_msgs::msg::Pose> cons
             remaining_timeout = timeout - total_optim_time.count();
         }
     }
+    DEBUG(found_valid_solution);
 
     return found_valid_solution;
 }
